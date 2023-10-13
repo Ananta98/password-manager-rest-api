@@ -14,9 +14,15 @@ func SetupRoutes(db *gorm.DB) *gin.Engine {
 		ctx.Set("db", db)
 	})
 	auth := r.Group("/auth")
-	auth.GET("/login", controllers.Login)
+	auth.POST("/login", controllers.Login)
+	auth.POST("/register", controllers.Register)
 
-	passwords := r.Group("/passwords")
+	passwords := r.Group("/password-managers")
 	passwords.Use(middlewares.JwtAuthMiddleware())
+	passwords.GET("/", controllers.GetPasswordManagers)
+	passwords.GET("/:id", controllers.GetPasswordManagerDetail)
+	passwords.POST("/", controllers.CreateNewPassManager)
+	passwords.DELETE("/:id", controllers.DeletePassManager)
+	passwords.PATCH("/:id", controllers.UpdatePassManager)
 	return r
 }
